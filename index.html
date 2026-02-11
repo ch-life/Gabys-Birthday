@@ -122,6 +122,10 @@ canvas#confetti {
     transform: scale(1.05);
 }
 
+.nickname {
+    font-size: 70px;   /* adjust to taste */
+}
+
 #muteBtn {
     position: fixed;
     top: 20px;
@@ -215,6 +219,7 @@ function startBirthdayLoop() {
 
     const line1 = document.createElement("div");
     const line2 = document.createElement("div");
+    line2.classList.add("nickname");
     const buttonContainer = document.createElement("div");
 
     line1.innerText = "HAPPY BIRTHDAY";
