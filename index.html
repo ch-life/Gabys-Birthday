@@ -142,6 +142,23 @@ canvas#confetti {
     color: black;
 }
 
+.glowName {
+    font-size: 48px;
+    text-shadow:
+        0 0 10px #00f7ff,
+        0 0 20px #ff00ff,
+        0 0 40px #00f7ff;
+
+    animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff; }
+    50% { text-shadow: 0 0 20px #00f7ff, 0 0 40px #00f7ff, 0 0 60px #00f7ff; }
+    100% { text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff; }
+}
+
+    
 </style>
 </head>
 <body>
@@ -209,18 +226,41 @@ muteBtn.addEventListener("click", () => {
 let birthdayInterval = null;
 
 function startBirthdayLoop() {
+
+    screen.innerHTML = "";
+
+    const line1 = document.createElement("div");
+    const line2 = document.createElement("div");
+    line2.classList.add("glowName");
+    const buttonContainer = document.createElement("div");
+
+    line1.innerText = "HAPPY 22ND BIRTHDAY";
+    line1.style.marginBottom = "20px";
+
+    line2.style.minHeight = "60px"; // prevents layout shift
+    line2.style.transition = "opacity 0.5s ease";
+
+    screen.appendChild(line1);
+    screen.appendChild(line2);
+    screen.appendChild(buttonContainer);
+
+    addRestartButton(buttonContainer);
+
     let index = 0;
 
     function updateName() {
-        screen.innerHTML = `HAPPY 22ND BIRTHDAY ${gabyNames[index]}.`;
-        index = (index + 1) % gabyNames.length;
+        line2.style.opacity = 0;
+
+        setTimeout(() => {
+            line2.innerText = gabyNames[index];
+            line2.style.opacity = 1;
+            index = (index + 1) % gabyNames.length;
+        }, 300);
     }
 
     updateName();
-
     birthdayInterval = setInterval(updateName, 4000);
 }
-
 
 async function typeLine(text, speed = 90, hold = 2000) {
     screen.innerHTML = "";
@@ -370,11 +410,9 @@ async function startAdventure() {
     await typeLine("Core Directive:");
     await typeLine("Main Character Energy.");
 
-    await typeLine("HAPPY 22ND BIRTHDAY...", 120, 1000);
-
     launchConfetti();
     startBirthdayLoop();
-    addRestartButton();
+
 }
 
 /* -------- CONFETTI -------- */
@@ -415,33 +453,33 @@ function animateConfetti() {
 initTransmission();
 
 /* -------- Optional Start Over -------- */
-function addRestartButton() {
+function addRestartButton(container) {
     const restartBtn = document.createElement("button");
     restartBtn.id = "confirmBtn";
     restartBtn.innerText = "START OVER";
 
+    restartBtn.style.marginTop = "40px";
+
     restartBtn.addEventListener("click", () => {
 
-        // Stop birthday name loop
         if (birthdayInterval) {
             clearInterval(birthdayInterval);
             birthdayInterval = null;
         }
 
-        // Reset confetti
         pieces = [];
         ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
 
-        // Reset music
         music.currentTime = 0;
 
         screen.innerHTML = "";
 
-        initTransmission(); // full reset to beginning
+        initTransmission();
     });
 
-    screen.appendChild(restartBtn);
+    container.appendChild(restartBtn);
 }
+
 
 </script>
 </body>
