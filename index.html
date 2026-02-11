@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GABY v22 — Cosmic Protocol</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: #050510;
+    color: #00f7ff;
+    font-family: 'Bungee Spice', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#screen {
+    text-align: center;
+    font-size: 40px;
+    max-width: 800px;
+    padding: 40px;
+    z-index: 2;
+}
+
+input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #00f7ff;
+    color: #00f7ff;
+    font-family: inherit;
+    font-size: 36px;
+    text-align: center;
+    outline: none;
+}
+
+.shake {
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(-5px,3px); }
+    50% { transform: translate(5px,-3px); }
+    75% { transform: translate(-3px,2px); }
+    100% { transform: translate(0,0); }
+}
+
+.flash {
+    animation: flash 0.1s infinite alternate;
+}
+
+@keyframes flash {
+    from { opacity: 1; }
+    to { opacity: 0.2; }
+}
+
+canvas#confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+<div id="screen"></div>
+
+<audio id="typeSound">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_2c1b0f6e38.mp3?filename=keyboard-typing-108923.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const screen = document.getElementById("screen");
+const typeSound = document.getElementById("typeSound");
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function typeLine(text, speed = 80, hold = 2000) { 
+    // slower typing
+    screen.innerHTML = "";
+    for (let char of text) {
+        screen.innerHTML += char;
+        typeSound.currentTime = 0;
+        typeSound.play();
+        await sleep(speed);
+    }
+    await sleep(hold);
+    screen.innerHTML = "";
+}
+
+function getInput(promptText) {
+    return new Promise(resolve => {
+        screen.innerHTML = promptText + "\n> ";
+        const input = document.createElement("input");
+        screen.appendChild(input);
+        input.focus();
+
+        input.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                const value = input.value.trim();
+                screen.removeChild(input);
+                screen.innerHTML += value + "\n";
+                resolve(value);
+            }
+        });
+    });
+}
+
+async function start() {
+    await typeLine("Initializing Cosmic Intelligence...");
+    await typeLine("Scanning quantum signature...");
+    await typeLine("Identity confirmed.");
+    await typeLine("Gaby");
+    await typeLine("Upgrade detected.");
+    await typeLine("Upgrade type: birthday");
+    await typeLine("Birthday version: 22");
+    await typeLine("Estimated delivery: 3 days.");
+
+    screen.innerHTML = "SYSTEM OVERRIDE";
+    screen.classList.add("flash");
+    await sleep(2000);
+    screen.classList.remove("flash");
+    screen.innerHTML = "";
+
+    await typeLine("SECRET UPDATE", 50, 3000);
+
+    await typeLine("Analyzing destiny matrix...");
+    await typeLine("Probability streams merging...");
+    screen.innerHTML = "The Universe trembles...";
+    screen.classList.add("shake");
+    await sleep(3000);
+    screen.classList.remove("shake");
+    screen.innerHTML = "";
+
+    await typeLine("Your birthday has been upgraded to ...");
+    await typeLine("Ultra mega awesome dopeness");
+    await typeLine("You determine your destiny");
+
+    await typeLine("But destiny demands a choice...");
+
+    // interactive choice
+    const choice = await getInput(
+        "1 — Seek Chaos & Adventure\n2 — Claim Wealth & Glory\n3 — Unlock Inner Cosmic Power"
+    );
+
+    await typeLine("Processing choice...");
+
+    if (choice === "1") {
+        await typeLine("Spontaneity unlocked.");
+        await typeLine("Legendary memories pending.");
+        await typeLine("Unexpected plot twists incoming.");
+    }
+    else if (choice === "2") {
+        await typeLine("Opportunities accelerating.");
+        await typeLine("Rooms shift when you enter.");
+        await typeLine("Momentum building.");
+    }
+    else {
+        await typeLine("Intuition enhanced.");
+        await typeLine("Confidence stabilizing.");
+        await typeLine("Magnetic presence activated.");
+    }
+
+    await typeLine("Core Directive:");
+    await typeLine("Main Character Energy.");
+
+    // keep final sentence up
+    screen.innerHTML = "HAPPY 22ND BIRTHDAY GABY.";
+
+    launchConfetti();
+}
+
+/* CONFETTI */
+const confettiCanvas = document.getElementById("confetti");
+const ctx = confettiCanvas.getContext("2d");
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+
+let pieces = [];
+
+function launchConfetti() {
+    for (let i = 0; i < 200; i++) {
+        pieces.push({
+            x: Math.random() * confettiCanvas.width,
+            y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+            size: Math.random() * 6 + 4,
+            speed: Math.random() * 4 + 2,
+            color: `hsl(${Math.random()*360},100%,60%)`
+        });
+    }
+    animateConfetti();
+}
+
+function animateConfetti() {
+    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    pieces.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x,p.y,p.size,p.size);
+        p.y += p.speed;
+        if (p.y > confettiCanvas.height) p.y = -10;
+    });
+    requestAnimationFrame(animateConfetti);
+}
+
+start();
+</script>
+
+</body>
+</html>
